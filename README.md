@@ -1,157 +1,150 @@
 # AgentForge for OpenClaw 🔧
 
-> **v2.0** (2026-03-09) - 9-step agent pipeline with 4-level memory, self-improvement, team alignment
+> **v2.0** (2026-03-09) — 9-step agent pipeline with 4-level memory, self-improvement system, team alignment
 
-Создание скиллов и агентов для OpenClaw. Полный пайплайн от идеи до рабочего продукта.
+Create skills and agents for OpenClaw. Full pipeline from idea to production-ready agent.
 
-## Зачем это нужно
+## Why
 
-Скилл = markdown-файл. Агент = конфиг + workspace. Звучит просто, но без опыта наступаешь на одни и те же грабли: пустой USER.md, нет памяти, агент не знает команду, данные в memory/ (крон удалит), frontmatter без `---` (молча игнорируется).
+Most people create an agent by writing one AGENTS.md file and calling it done. Then they wonder why the agent gives generic answers, doesn't know who they are, forgets everything after context reset, and feels like a new hire on day one — every single time.
 
-AgentForge кодифицирует боевой опыт с десятками скиллов и агентов в пошаговый процесс. Вместо "а правильно ли я делаю" - чёткий пайплайн с чеклистами.
+AgentForge codifies real battle-tested experience with dozens of skills and agents into a step-by-step process with checklists and templates.
 
-## Три режима
+## Three Modes
 
-| Режим | Что делает | Шаги |
-|-------|-----------|------|
-| **A: Скилл** | Новый скилл от идеи до теста | 11 шагов |
-| **B: Агент** | Новый агент с памятью и автоулучшением | 9 шагов |
-| **C: Улучшение** | Доработка существующего | 5 шагов |
+| Mode | What it does | Steps |
+|------|-------------|-------|
+| **A: Skill** | New skill from idea to test | 11 steps |
+| **B: Agent** | New agent with memory and self-improvement | 9 steps |
+| **C: Improve** | Upgrade existing skill or agent | 5 steps |
 
-## Что получишь
+## What You Get
 
-### Скилл:
+### Skill:
 ```
 skills/my-skill/
-├── SKILL.md              # Роль/алгоритм + примеры
-├── data/                 # Данные (крон не тронет)
-└── references/           # Детали, словари, справочники
+├── SKILL.md              # Logic + examples
+├── data/                 # Data files (safe from cleanup crons)
+└── references/           # Details, dictionaries, guides
 ```
 
-### Агент (полноценный):
+### Agent (full):
 ```
 ~/.openclaw/agents/my-agent/agent/
-├── AGENTS.md             # Роль, команда, скиллы, память, автоулучшение
-├── SOUL.md               # Личность и принципы
-├── USER.md               # Профиль владельца (адаптирован под роль)
-├── IDENTITY.md           # Имя и описание
-├── MEMORY.md             # Сводка ключевых фактов
-├── TOOLS.md              # Инструменты с командами
-├── skills -> /shared/    # Симлинк на общие скиллы
-└── memory/
-    ├── lessons.md        # Уроки и правила
-    ├── patterns.md       # Паттерны автоулучшения
-    ├── projects-log.md   # История задач
-    └── architecture.md   # Самоописание
+├── AGENTS.md             # Role, team, skills, memory, self-improvement
+├── SOUL.md               # Personality and principles
+├── USER.md               # Owner profile (adapted for agent's role)
+├── IDENTITY.md           # Name and description
+├── MEMORY.md             # Key facts summary
+├── TOOLS.md              # Real tools with commands
+├── BOOTSTRAP.md          # Context recovery after compactification
+├── memory/
+│   ├── lessons.md        # Lessons and rules
+│   ├── patterns.md       # Self-improvement patterns
+│   ├── projects-log.md   # Task history
+│   ├── architecture.md   # Self-description
+│   └── handoff.md        # "Save game" of current conversation
+└── skills -> /shared/    # Symlink to shared skills
 ```
 
-## Ключевые фишки
+## Key Features
 
-### Типология
-- **Скиллы:** Workflow / Role / Data-driven / Гибрид
-- **Агенты:** Полноценный / Специализированный / Маска (топик-роль)
+### 4-Level Memory System
+1. **Contextual** — current session
+2. **File-based** — lessons.md, patterns.md, projects-log.md (read on startup)
+3. **Vector** — memory_search across past conversations
+4. **Identity** — AGENTS.md, SOUL.md, USER.md (auto-loaded)
 
-### 4 уровня памяти агента
-1. **Контекстная** - текущая сессия
-2. **Файловая** - lessons.md, patterns.md, projects-log.md
-3. **Векторная** - memory_search по прошлым диалогам
-4. **Identity** - AGENTS.md, SOUL.md, USER.md (автозагрузка)
+### Auto Handoff (solves "agent gets dumb" problem)
+Every hour a background task reads the session history and writes a "save game" — current topic, decisions, TODOs. When context resets, the agent recovers 95% of context in seconds. Before: lost 30-50%. Now: max 5%.
 
-### Система автоулучшения
+### Self-Improvement System
 ```
-Ошибка → patterns.md → 3 повтора → правило в lessons.md
+Mistake → patterns.md → 3 repeats → new rule in lessons.md
 ```
-Агент учится на правках и не повторяет ошибки.
+The agent learns from corrections and stops repeating errors.
 
-### Прозрачность
-Агент пишет что делает: 🔄 начинаю, 📚 читаю, 🔍 ищу. Владелец видит процесс.
+### 22 Battle-Tested Pitfalls
+14 agent pitfalls + 8 skill pitfalls. Each one cost hours of debugging. You won't have to.
 
-### Команда
-Агент знает других агентов, может делегировать и спрашивать коллег.
+### Skill Typology
+4 types: Workflow / Role / Data-driven / Hybrid — with templates for each.
 
-### Автоматическая память (NEW)
-BOOTSTRAP.md + Auto Handoff + Auto Diary. Агент не теряет контекст при компактификации. Без этого теряется 30-50% текущего разговора.
+### Agent Typology
+3 types: Full (own bot, memory, skills) / Specialized (own ecosystem) / Mask (systemPrompt role)
 
-### Грабли
-14 типичных ошибок с агентами + 8 со скиллами. Реальный опыт, не теория.
-
-### Безопасность
-- tools.deny (gateway ВСЕГДА запрещён)
-- Security audit для публичных скиллов (grep на утечки)
-- USER.md: только рабочий контекст, не досье
-
-## Установка
+## Installation
 
 ```bash
-# 1. Скопируй скилл
+# 1. Copy the skill
 mkdir -p <workspace>/skills/agent-forge/references
 cp SKILL.md <workspace>/skills/agent-forge/
 cp references/agent-templates.md <workspace>/skills/agent-forge/references/
 
-# 2. Перезапусти
+# 2. Restart
 openclaw gateway restart
 ```
 
-Готово. Напиши агенту "создай скилл" или "создай агента".
+Done. Tell your agent "create a skill" or "create an agent".
 
-## Быстрый старт
+## Quick Start
 
-### Скилл:
-> "Создай скилл для анализа конкурентов"
+### Skill:
+> "Create a skill for competitor analysis"
 
-Агент задаст 3-4 вопроса, определит тип, покажет черновик, дождётся "ок", создаст.
+The agent asks 3-4 questions, determines the type, shows a draft, waits for approval, creates the structure.
 
-### Агент:
-> "Создай агента-маркетолога"
+### Agent:
+> "Create a marketer agent"
 
-Агент спросит: роль, tools, память, связи, привязка. Создаст конфиг + все 13 файлов workspace.
+The agent asks about: role, tools, memory, connections, binding. Creates config + all workspace files.
 
-## Примеры скиллов
+## Examples
 
-В `examples/` - 5 готовых скиллов разных типов:
+5 ready-made skills of different types in `examples/`:
 
-| Пример | Тип | Что делает |
-|--------|-----|-----------|
-| weather-bot | Workflow | Погода по городу |
-| code-reviewer | Role | Код-ревью с правилами |
-| task-tracker | Data-driven | Трекер задач с data/ |
-| content-planner | Гибрид | Role + Workflow + references/ |
-| meeting-prep | Workflow | Подготовка к встречам |
+| Example | Type | What it does |
+|---------|------|-------------|
+| weather-bot | Workflow | Weather by city |
+| code-reviewer | Role | Code review with rules |
+| task-tracker | Data-driven | Task tracker with data/ |
+| content-planner | Hybrid | Role + Workflow + references/ |
+| meeting-prep | Workflow | Meeting preparation |
 
-## Файлы
+## Files
 
-| Файл | Что внутри |
-|------|-----------|
-| `SKILL.md` | Основной скилл (509 строк, 3 режима) |
-| `references/agent-templates.md` | Шаблоны всех 10 файлов агента |
-| `examples/` | 5 примеров скиллов |
+| File | Contents |
+|------|---------|
+| `SKILL.md` | Main skill (521 lines, 3 modes, Russian) |
+| `references/agent-templates.md` | Templates for all 13 agent files |
+| `examples/` | 5 example skills |
 
-## Триггеры
+## Triggers
 
 "создай скилл", "новый скилл", "создай агента", "новый агент", "улучши скилл", "agent creator", "skill creator"
 
-## Требования
+## Requirements
 
-- OpenClaw (любая актуальная версия)
-- Любая модель (рекомендуется Claude Sonnet 4.5+)
+- OpenClaw (any current version)
+- Any model (Claude Sonnet 4.5+ recommended)
 
 ---
 
-## Автор
+## Author
 
-**Алексей Ульянов** — строю AI-агентов на OpenClaw и делюсь опытом.
+**Aleksei Ulianov** — building AI agents on OpenClaw and sharing the experience.
 
 - 🎬 YouTube: [@alekseiulianov](https://youtube.com/@alekseiulianov)
 - 📱 Telegram: [@Sprut_AI](https://t.me/Sprut_AI)
 
-## Хочешь больше?
+## Want More?
 
-В этом репозитории - инструмент для создания. А полные пошаговые настройки агента с нуля, готовые скиллы, поддержка и обновления - в закрытом канале:
+This repo gives you the tool. But the full picture — my complete agent architecture, step-by-step setup guides, regular updates, Q&A, and everything I build for myself — lives in the private channel:
 
-👉 [**AI ОПЕРАЦИОНКА** — подписаться](https://t.me/tribute/app?startapp=sAFx)
+👉 [**AI ОПЕРАЦИОНКА** — join](https://t.me/tribute/app?startapp=sAFx)
 
-Там уже 8 подробных инструкций (PDF + MD), готовые скиллы (врач, механик, копирайтер, аналитик и др.), и живое сообщество людей которые строят своих агентов.
+I build and improve my own agent system daily. Everything I learn, every new skill, every architectural decision — goes there first. It's not just instructions, it's a living knowledge base that grows with my experience.
 
-## Лицензия
+## License
 
-© 2026 Aleksei Ulianov. Бесплатно для личного использования.
+© 2026 Aleksei Ulianov. Free for personal use. Commercial use and redistribution without author's permission is prohibited.

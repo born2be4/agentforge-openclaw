@@ -149,6 +149,12 @@ This repo gives you the tool. But the full picture — my complete agent archite
 
 I build and improve my own agent system daily. Everything I learn, every new skill, every architectural decision — goes there first. It's not just instructions, it's a living knowledge base that grows with my experience.
 
+## Kim Edition (RU)
+
+If you need a production-hardened variant (minimal notifications, safe restart policy, lite/standard/full profiles), see:
+
+- [README-RU.md](README-RU.md)
+
 ## License
 
 © 2026 Aleksei Ulianov. Free for personal use. Commercial use and redistribution without author's permission is prohibited.
